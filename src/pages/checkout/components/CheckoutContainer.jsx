@@ -1,23 +1,29 @@
-export function CheckoutContainer(){
+
+import { FormatMoney } from "../../../utils/FormatMoney";
+import dayjs from "dayjs";
+
+export function CheckoutContainer({cartItem, deliveryOptions}){
+    
+    const selectedDeliveryOption = deliveryOptions.find(option=>option.id===cartItem.deliveryOptionId);
     return (
         <div className="cart-item-container">
             <div className="delivery-date">
-                Delivery date: Tuesday, June 21
+                {dayjs(selectedDeliveryOption.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
             </div>
 
             <div className="cart-item-details-grid">
-                <img className="product-image" src="images/products/athletic-cotton-socks-6-pairs.jpg" />
+                <img className="product-image" src={cartItem.product.image} />
 
                 <div className="cart-item-details">
                     <div className="product-name">
-                        Black and Gray Athletic Cotton Socks - 6 Pairs
+                        {cartItem.product.name}
                     </div>
                     <div className="product-price">
-                        $10.90
+                        {FormatMoney(cartItem.product.priceCents)}
                     </div>
                     <div className="product-quantity">
                         <span>
-                            Quantity: <span className="quantity-label">2</span>
+                            Quantity: <span className="quantity-label">{cartItem.quantity}</span>
                         </span>
                         <span className="update-quantity-link link-primary">
                             Update
@@ -32,41 +38,19 @@ export function CheckoutContainer(){
                     <div className="delivery-options-title">
                         Choose a delivery option:
                     </div>
-                    <div className="delivery-option">
-                        <input type="radio" checked className="delivery-option-input" name="delivery-option-1" />
-                        <div>
-                            <div className="delivery-option-date">
-                                Tuesday, June 21
-                            </div>
-                            <div className="delivery-option-price">
-                                FREE Shipping
-                            </div>
-                        </div>
-                    </div>
-                    <div className="delivery-option">
-                        <input type="radio" className="delivery-option-input" name="delivery-option-1" />
-                        <div>
-                            <div className="delivery-option-date">
-                                Wednesday, June 15
-                            </div>
-                            <div className="delivery-option-price">
-                                $4.99 - Shipping
+                    {deliveryOptions.map(option=>{
+                        return <div key={option.id} className="delivery-option">
+                            <input type="radio" checked={option.id=== cartItem.deliveryOptionId} className="delivery-option-input" name={'delivery-option-'+cartItem.productId} />
+                            <div>
+                                <div className="delivery-option-date">
+                                    {dayjs(option.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
+                                </div>
+                                <div className="delivery-option-price">
+                                    {option.priceCents?FormatMoney(option.priceCents):'FREE Shipping'}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="delivery-option">
-                        <input type="radio"
-                            className="delivery-option-input"
-                            name="delivery-option-1" />
-                        <div>
-                            <div className="delivery-option-date">
-                                Monday, June 13
-                            </div>
-                            <div className="delivery-option-price">
-                                $9.99 - Shipping
-                            </div>
-                        </div>
-                    </div>
+                    })}
                 </div>
             </div>
         </div>
