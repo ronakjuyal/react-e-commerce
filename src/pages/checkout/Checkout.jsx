@@ -7,11 +7,17 @@ import axios from "axios";
 export function Checkout({cart}){
     console.log(cart);
     const [deliveryOptions, setDeliveryOptions] = useState([]);
+    const [paymentSummary,setPaymentSummary] = useState(null);
     useEffect(()=>{
         axios.get('/api/delivery-options?expand=estimatedDeliveryTime')
             .then((response)=>{
                 setDeliveryOptions(response.data);
             });
+        axios.get('/api/payment-summary') 
+            .then(response=>{
+                setPaymentSummary(response.data);
+                console.log(response.data);
+            })
     },[]);
     return(
         <>
@@ -28,7 +34,7 @@ export function Checkout({cart}){
                         })}
                     </div>
 
-                    <CheckoutPaymentSummary/>
+                    {paymentSummary && <CheckoutPaymentSummary paymentSummary={paymentSummary}/>}
                     
                 </div>
             </div>
