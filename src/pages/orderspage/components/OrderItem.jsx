@@ -1,21 +1,22 @@
+import dayjs from "dayjs";
 import { Link } from "react-router";
 
-export function OrderItem(){
+export function OrderItem({productDetail}){ 
     return (
         <>
             <div className="product-image-container">
-              <img src="images/products/athletic-cotton-socks-6-pairs.jpg" />
+              <img src={productDetail.product.image} />
             </div>
 
             <div className="product-details">
                 <div className="product-name">
-                    Black and Gray Athletic Cotton Socks - 6 Pairs
+                    {productDetail.product.name}
                 </div>
                 <div className="product-delivery-date">
-                    Arriving on: August 15
+                    Arriving on: {dayjs(productDetail.estimatedDeliveryTimeMs).format('MMMM D')}
                 </div>
                 <div className="product-quantity">
-                    Quantity: 1
+                    Quantity: {productDetail.quantity}
                 </div>
                 <button className="buy-again-button button-primary">
                     <img className="buy-again-icon" src="images/icons/buy-again.png" />

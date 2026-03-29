@@ -1,6 +1,8 @@
+import dayjs from "dayjs";
 import { OrderItem } from "./OrderItem";
+import { FormatMoney } from "../../../utils/FormatMoney";
 
-export function OrderContainer(){
+export function OrderContainer({order}){
     return (
         <div className="order-container">
 
@@ -8,23 +10,24 @@ export function OrderContainer(){
               <div className="order-header-left-section">
                 <div className="order-date">
                   <div className="order-header-label">Order Placed:</div>
-                  <div>August 12</div>
+                  <div>{dayjs(order.orderTimeMs).format('MMMM D')}</div>
                 </div>
                 <div className="order-total">
                   <div className="order-header-label">Total:</div>
-                  <div>$35.06</div>
+                  <div>{FormatMoney(order.totalCostCents)}</div>
                 </div>
               </div>
 
               <div className="order-header-right-section">
                 <div className="order-header-label">Order ID:</div>
-                <div>27cba69d-4c3d-4098-b42d-ac7fa62b7664</div>
+                <div>{order.id}</div>
               </div>
             </div>
 
             <div className="order-details-grid">
-              <OrderItem/>
-              <OrderItem/>
+              {order.products.map(productDetail=>{
+                return <OrderItem key={productDetail.productId} productDetail={productDetail}/>
+              })}
             </div>
         </div>
     );
