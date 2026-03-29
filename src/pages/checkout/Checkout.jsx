@@ -2,7 +2,17 @@ import { CheckoutContainer } from "./components/CheckoutContainer";
 import { CheckoutHeader } from "./components/CheckoutHeader";
 import { CheckoutPaymentSummary } from "./components/CheckoutPaymentSummary";
 import  './Checkout.css'
-export function Checkout(){
+import { useEffect, useState } from "react";
+import axios from "axios";
+export function Checkout({cart}){
+    console.log(cart);
+    const [deliveryOptions, setDeliveryOptions] = useState([]);
+    useEffect(()=>{
+        axios.get('/api/delivery-options?expand=estimatedDeliveryTime')
+            .then((response)=>{
+                setDeliveryOptions(response.data);
+            });
+    },[]);
     return(
         <>
             <link rel="icon" type="image/png" href="images/icons/cart-favicon.png" />
@@ -11,10 +21,11 @@ export function Checkout(){
                 <div className="page-title">Review your order</div>
 
                 <div className="checkout-grid">
-
+                    
                     <div className="order-summary">
-                        <CheckoutContainer/>
-                        {/* <CheckoutContainer/> */}
+                        {cart.map(cartItem => {
+                            return <CheckoutContainer key={cartItem.product.id} cartItem={cartItem} deliveryOptions={deliveryOptions}/>
+                        })}
                     </div>
 
                     <CheckoutPaymentSummary/>
