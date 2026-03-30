@@ -3,7 +3,7 @@ import { PageHeader } from "../PageHeader";
 import { OrderContainer } from "./components/OrderContainer";
 import './OrdersPage.css'
 import axios from "axios";
-export function OrdersPage(){
+export function OrdersPage({cart}){
     const [orders,setOrders] = useState([]);
     useEffect(()=>{
         const fetchOrders=async ()=>{
@@ -15,7 +15,7 @@ export function OrdersPage(){
     return (
         <>
             <link rel="icon" type="image/png" href="images/icons/orders-favicon.png" />
-            <PageHeader />
+            <PageHeader cart={cart}/>
             <div className="orders-page">
                 <div className="page-title">Your Orders</div>
 
