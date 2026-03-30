@@ -8,17 +8,21 @@ export function Checkout({cart}){
     console.log(cart);
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary,setPaymentSummary] = useState(null);
+
     useEffect(()=>{
-        axios.get('/api/delivery-options?expand=estimatedDeliveryTime')
-            .then((response)=>{
-                setDeliveryOptions(response.data);
-            });
-        axios.get('/api/payment-summary') 
-            .then(response=>{
-                setPaymentSummary(response.data);
-                console.log(response.data);
-            })
+        const checkoutPageData = async ()=>{
+            let response= await axios.get('/api/delivery-options?expand=estimatedDeliveryTime');
+            setDeliveryOptions(response.data);
+            response= await axios.get('/api/payment-summary');
+            setPaymentSummary(response.data);
+        }
+        checkoutPageData();
     },[]);
+
+    if (deliveryOptions.length === 0 || !paymentSummary) {
+        return <div>Loading checkout...</div>;
+    }
+    
     return(
         <>
             <link rel="icon" type="image/png" href="images/icons/cart-favicon.png" />

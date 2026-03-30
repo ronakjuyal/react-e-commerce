@@ -4,11 +4,13 @@ import { ProductGrid } from "./components/ProductGrid";
 import axios from "axios";
 export function HomePage(){
     const [products, setProducts]=useState([]);
+
     useEffect(()=>{
-        axios.get('api/products')
-            .then((response)=>{
-                setProducts(response.data);
-            });
+        const fetchProduct = async ()=>{
+            const response = await axios.get('api/products')
+            setProducts(response.data);
+        }
+        fetchProduct();
     },[]);
     return (<>
             <link rel="icon" type="image/png" href="images/icons/home-favicon.png" />

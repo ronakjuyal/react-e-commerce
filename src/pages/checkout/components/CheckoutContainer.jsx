@@ -1,6 +1,7 @@
 
 import { FormatMoney } from "../../../utils/FormatMoney";
 import dayjs from "dayjs";
+import { DeliveryOption } from "./DeliveryOption";
 
 export function CheckoutContainer({cartItem, deliveryOptions}){
     
@@ -39,17 +40,7 @@ export function CheckoutContainer({cartItem, deliveryOptions}){
                         Choose a delivery option:
                     </div>
                     {deliveryOptions.map(option=>{
-                        return <div key={option.id} className="delivery-option">
-                            <input type="radio" checked={option.id=== cartItem.deliveryOptionId} className="delivery-option-input" name={'delivery-option-'+cartItem.productId} />
-                            <div>
-                                <div className="delivery-option-date">
-                                    {dayjs(option.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
-                                </div>
-                                <div className="delivery-option-price">
-                                    {option.priceCents?FormatMoney(option.priceCents):'FREE Shipping'}
-                                </div>
-                            </div>
-                        </div>
+                        return <DeliveryOption key={option.id} option={option} cartItem={cartItem}/>
                     })}
                 </div>
             </div>
