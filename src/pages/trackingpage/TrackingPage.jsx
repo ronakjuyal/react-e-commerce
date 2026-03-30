@@ -1,44 +1,72 @@
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { PageHeader } from '../PageHeader';
 import './TrackingPage.css'
-export function TrackingPage(){
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import dayjs from 'dayjs';
+export function TrackingPage({cart}){
+    const {orderId, productId} = useParams();
+    const [order, setOrder] = useState(null);
+
+    useEffect(()=>{
+        const fetchOrder = async()=>{
+            const response = await axios.get(`/api/orders/${orderId}?expand=products`);
+            setOrder(response.data);
+        } 
+        fetchOrder();
+    },[orderId])
+
+    if(!order) return null;
+
+    const orderProduct = order.products.find(product=>product.productId===productId);
+    const totalDeliveryTime = orderProduct.estimatedDeliveryTimeMs-order.orderTimeMs;
+    const timePassed= dayjs().valueOf()-order.orderTimeMs;
+    let deliveryPercent = (timePassed/totalDeliveryTime)*100;
+
+    if(deliveryPercent>100){
+        deliveryPercent = 100;
+    }
+    const currentStatus=deliveryPercent===100?'isDelivered':deliveryPercent>=33?'isShipped':'isPreparing';
+
     return (
         <>
-            <PageHeader/>
-            <div class="tracking-page">
-                <div class="order-tracking">
-                    <Link class="back-to-orders-link link-primary" to="/orders">
+            <PageHeader cart={cart}/>
+            <div className="tracking-page">
+                <div className="order-tracking">
+                    <Link className="back-to-orders-link link-primary" to="/orders">
                         View all orders
                     </Link>
 
-                    <div class="delivery-date">
-                        Arriving on Monday, June 13
+                    <div className="delivery-date">
+                        {deliveryPercent===100?'Delivered on ':'Arriving on '} {dayjs(orderProduct.estimatedDeliveryTimeMs).format('dddd, MMMM D')}
                     </div>
 
-                    <div class="product-info">
-                        Black and Gray Athletic Cotton Socks - 6 Pairs
+                    <div className="product-info">
+                        {orderProduct.name}
                     </div>
 
-                    <div class="product-info">
-                        Quantity: 1
+                    <div className="product-info">
+                        Quantity: {orderProduct.quantity}
                     </div>
 
-                    <img class="product-image" src="images/products/athletic-cotton-socks-6-pairs.jpg" />
+                    <img className="product-image" src={orderProduct.product.image} />
 
-                    <div class="progress-labels-container">
-                        <div class="progress-label">
+                    <div className="progress-labels-container">
+                        <div className={`progress-label ${currentStatus==='isPreparing'?'current-status':''}`}>
                             Preparing
                         </div>
-                        <div class="progress-label current-status">
+                        <div className={`progress-label ${currentStatus==='isShipped'?'current-status':''}`}>
                             Shipped
                         </div>
-                        <div class="progress-label">
+                        <div className={`progress-label ${currentStatus==='isDelivered'?'current-status':''}`}>
                             Delivered
                         </div>
                     </div>
 
-                        <div class="progress-bar-container">
-                        <div class="progress-bar"></div>
+                        <div className="progress-bar-container">
+                        <div className="progress-bar" style={{
+                            width: `${deliveryPercent}%`
+                        }}></div>
                     </div>
                 </div>
             </div>
