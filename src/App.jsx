@@ -9,16 +9,18 @@ import axios from 'axios'
 
 function App() {
   const [cart, setCart] = useState([]);
-  useEffect(()=>{
-    const fetchCart=async ()=>{
+  const fetchCart=async ()=>{
       const response = await axios.get('api/cart-items?expand=product');
         setCart(response.data);
       }
+
+  useEffect(()=>{
+    
       fetchCart();
     },[]);
   return (
     <Routes>
-      <Route index element={<HomePage cart={cart}/>}/>
+      <Route index element={<HomePage cart={cart} fetchCart={fetchCart}/>}/>
       <Route path="checkout" element={<Checkout cart={cart}/>}/>
       <Route path="orders" element={<OrdersPage cart={cart}/>}/>
       <Route path="tracking/:orderId/:productId" element={<TrackingPage cart={cart}/>}/>
