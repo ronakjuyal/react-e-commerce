@@ -3,7 +3,7 @@ import { FormatMoney } from "../../../utils/FormatMoney";
 import dayjs from "dayjs";
 import { DeliveryOption } from "./DeliveryOption";
 
-export function CheckoutContainer({cartItem, deliveryOptions}){
+export function CheckoutContainer({cartItem, deliveryOptions,fetchCart}){
     
     const selectedDeliveryOption = deliveryOptions.find(option=>option.id===cartItem.deliveryOptionId);
     return (
@@ -40,7 +40,7 @@ export function CheckoutContainer({cartItem, deliveryOptions}){
                         Choose a delivery option:
                     </div>
                     {deliveryOptions.map(option=>{
-                        return <DeliveryOption key={option.id} option={option} cartItem={cartItem}/>
+                        return <DeliveryOption key={option.id} option={option} cartItem={cartItem} fetchCart={fetchCart}/>
                     })}
                 </div>
             </div>
