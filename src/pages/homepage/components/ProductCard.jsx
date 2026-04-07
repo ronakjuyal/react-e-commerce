@@ -1,6 +1,22 @@
+import axios from 'axios';
 import { FormatMoney } from '../../../utils/FormatMoney';
 import './ProductCard.css'
-export function ProductCard({product}){
+import { useState } from 'react';
+export function ProductCard({product,fetchCart}){
+  const [quantity,setQuantity]=useState(1);
+
+  const addToCart=async ()=> {
+              await axios.post('/api/cart-items',{
+                productId :  product.id,
+                quantity
+              });
+              await fetchCart();
+            };
+  const selectQuantity=(event)=>{
+              const quantitySelected = Number(event.target.value);
+              setQuantity(quantitySelected);
+            }
+            
    return (
       <div className="product-container">
           <div className="product-image-container">
@@ -25,7 +41,7 @@ export function ProductCard({product}){
           </div>
 
           <div className="product-quantity-container">
-            <select>
+            <select value={quantity} onChange={selectQuantity}>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -46,7 +62,8 @@ export function ProductCard({product}){
             Added
           </div>
 
-          <button className="add-to-cart-button button-primary">
+          <button className="add-to-cart-button button-primary"
+            onClick={addToCart}>
             Add to Cart
           </button>
         </div>
