@@ -4,7 +4,7 @@ import { CheckoutPaymentSummary } from "./components/CheckoutPaymentSummary";
 import  './Checkout.css'
 import { useEffect, useState } from "react";
 import axios from "axios";
-export function Checkout({cart}){
+export function Checkout({cart,fetchCart}){
     console.log(cart);
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary,setPaymentSummary] = useState(null);
@@ -17,7 +17,7 @@ export function Checkout({cart}){
             setPaymentSummary(response.data);
         }
         checkoutPageData();
-    },[]);
+    },[cart]);
 
     if (deliveryOptions.length === 0 || !paymentSummary) {
         return <div>Loading checkout...</div>;
@@ -34,7 +34,7 @@ export function Checkout({cart}){
                     
                     <div className="order-summary">
                         {cart.map(cartItem => {
-                            return <CheckoutContainer key={cartItem.product.id} cartItem={cartItem} deliveryOptions={deliveryOptions}/>
+                            return <CheckoutContainer key={cartItem.product.id} cartItem={cartItem} deliveryOptions={deliveryOptions} fetchCart={fetchCart}/>
                         })}
                     </div>
 
